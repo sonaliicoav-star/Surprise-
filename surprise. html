@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spidey Surprise!</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle, #1a1a2e, #0f0f1b);
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* The Main Action Button */
+        .shooter-btn {
+            background: radial-gradient(circle, #e50914, #b20710);
+            border: 4px solid #ffffff;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            font-weight: bold;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(229, 9, 20, 0.6);
+            transition: transform 0.2s, box-shadow 0.2s;
+            z-index: 10;
+        }
+
+        .shooter-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(229, 9, 20, 0.9);
+        }
+
+        /* Web Shooter Overlay Effect */
+        .web-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* Hidden Surprise Message Card */
+        .surprise-card {
+            display: none;
+            position: absolute;
+            background: rgba(15, 23, 42, 0.95);
+            border: 4px solid #00d2ff;
+            box-shadow: 0 0 40px rgba(0, 210, 255, 0.6);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 450px;
+            transform: scale(0.5);
+            opacity: 0;
+            transition: all 0.5s ease-out;
+            z-index: 20;
+        }
+
+        .surprise-card.reveal {
+            display: block;
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        h1 {
+            color: #ff3333;
+            text-shadow: 2px 2px #000, 0 0 15px rgba(255,51,51,0.5);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #e2e8f0;
+        }
+
+        .accent {
+            color: #00d2ff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Trigger Button -->
+    <button class="shooter-btn" id="shootBtn">THWIP!<br>Click Me</button>
+
+    <!-- Canvas drawing the spiderweb animation -->
+    <canvas class="web-canvas" id="webCanvas"></canvas>
+
+    <!-- Hidden Message Content (Change text below to customize your surprise!) -->
+    <div class="surprise-card" id="surpriseCard">
+        <h1>THWIP! Surprise! 🕸️</h1>
+        <p>With great power comes great responsibility...</p>
+        <p>But today, your only responsibility is to have an <span class="accent">Amazing, Spectacular, and Ultimate</span> day!</p>
+        <p class="accent">- From Your Friendly Neighborhood Fan</p>
+    </div>
+
+    <!-- Web sound effect -->
+    <audio id="webSound" src="https://mixkit.co"></audio>
+
+    <script>
+        document.getElementById('shootBtn').addEventListener('click', function() {
+            // Play web action sound
+            const sound = document.getElementById('webSound');
+            sound.volume = 0.5;
+            sound.play();
+
+            // Fire the spiderweb canvas drawing animation
+            animateWeb();
+
+            // Hide the button and drop the surprise card after a split second
+            this.style.display = 'none';
+            setTimeout(() => {
+                const card = document.getElementById('surpriseCard');
+                card.classList.add('reveal');
+            }, 400);
+        });
+
+        // Simple script to draw expanding web lines on screen
+        function animateWeb() {
+            const canvas = document.getElementById('webCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+            ctx.lineWidth = 3;
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            // Draw standard web spokes outward from center
+            for (let i = 0; i < 12; i++) {
+                let angle = (i * 2 * Math.PI) / 12;
+                let targetX = centerX + Math.cos(angle) * canvas.width;
+                let targetY = centerY + Math.sin(angle) * canvas.height;
+                
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(targetX, targetY);
+                ctx.stroke();
+            }
+
+            // Draw concentric web rings
+            ctx.lineWidth = 1.5;
+            for (let radius = 50; radius < canvas.width; radius += 60) {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+            }
+        }
+    </script>
+</body>
+</html>
